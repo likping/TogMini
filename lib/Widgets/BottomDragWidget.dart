@@ -5,8 +5,9 @@ class BottomDragWidget extends StatefulWidget {
   Widget child;
   final reverseVisible;
   final detailVisible;
+  double childHeight;
   _BottomDragWidgetState createState() => _BottomDragWidgetState();
-  BottomDragWidget({this.child,this.detailVisible,this.reverseVisible});
+  BottomDragWidget({this.child,this.detailVisible,this.reverseVisible ,this.childHeight});
 }
 
 class _BottomDragWidgetState extends State<BottomDragWidget> with TickerProviderStateMixin {
@@ -20,6 +21,7 @@ class _BottomDragWidgetState extends State<BottomDragWidget> with TickerProvider
             child: widget.child,
             reverseVisible:widget.reverseVisible,
             detailVisible: widget.detailVisible,
+            childHeight: widget.childHeight,
           ),
         )
       ],
@@ -33,7 +35,8 @@ class DragContainer extends StatefulWidget {
   _DragContainerState createState() => _DragContainerState();
   final reverseVisible;
   final detailVisible;
-  DragContainer({this.child,this.detailVisible,this.reverseVisible});
+  double childHeight;
+  DragContainer({this.child,this.detailVisible,this.reverseVisible,this.childHeight});
 }
 
 class _DragContainerState extends State<DragContainer> with TickerProviderStateMixin {
@@ -41,8 +44,9 @@ class _DragContainerState extends State<DragContainer> with TickerProviderStateM
   AnimationController animationController;
   Animation animation;
   double dragY=0.0;
-  double limitY=115;
+  double limitY;
   initState() {
+    limitY=widget.childHeight - 5;
     animationController = AnimationController(
         vsync: this,
         duration: const Duration(milliseconds: 250)

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import "./Audio.dart";
-import "./Constant.dart";
+import "package:tog/AudioComponent/Audio.dart";
+import 'package:tog/Config//Constant.dart';
 import "dart:convert";
-import "AudioFileStore.dart";
-import "./Player.dart";
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import 'package:tog/Activity//Player.dart';
 
 class ListViewItemWidget extends StatefulWidget {
   State createState() {

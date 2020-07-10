@@ -21,12 +21,15 @@ class Player {
 
 
   play(link) async{
-    int result= await audioPlayer.play(link);
-    if(result==1){
-      print("play success");
-
-    }else{
-      print("play failed");
+    try {
+      int result = await audioPlayer.play(link);
+      if (result == 1) {
+        print("play success");
+      } else {
+        print("play failed");
+      }
+    }catch(error){
+       print("failed");
     }
   }
   pause() async{

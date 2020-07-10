@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import "./RearchListItemWidget.dart";
-import "./Audio.dart";
-import "./AudioFileStore.dart";
-import "./Constant.dart";
+import "package:tog/Widgets/RearchListItemWidget.dart";
+import "package:tog/AudioComponent/Audio.dart";
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import 'package:tog/Config//Constant.dart';
 
 enum Process {
   loading,

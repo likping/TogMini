@@ -1,7 +1,7 @@
-import "./Audio.dart";
+import "package:tog/AudioComponent/Audio.dart";
 import 'dart:convert';
 import "dart:io";
-import "./Player.dart";
+import 'package:tog/Activity//Player.dart';
 
 class AudioApiClient {
   final HttpClient httpClient;

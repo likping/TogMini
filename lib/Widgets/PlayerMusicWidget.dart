@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import "./ProcessBarWidget.dart";
-import "./Player.dart";
-import "./Constant.dart";
-import "./AudioFileStore.dart";
-import "./Audio.dart";
+import "package:tog/Widgets/ProcessBarWidget.dart";
+import 'package:tog/Activity//Player.dart';
+import 'package:tog/Config//Constant.dart';
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import "package:tog/AudioComponent/Audio.dart";
 import "dart:convert";
-import "./Player.dart";
+import 'package:tog/Activity//Player.dart';
 import "package:audioplayers/audioplayers.dart";
 class PlayerMusicWidget extends StatefulWidget {
 
@@ -27,11 +27,9 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
   String songName;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     refresh();//初始化 audioIndex;
     Player.instance.audioPlayer.onAudioPositionChanged.listen((Duration  p){
-//      print('Current position: ${p.toString().substring(2,7)}');
       if(mounted){
         setState((){
           this.Position=p.inSeconds;
@@ -43,7 +41,6 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
 
     });
     Player.instance.audioPlayer.onDurationChanged.listen((Duration d) {
-//      print('Max duration: ${d.toString().substring(2,7)}');
       if(mounted) {
         setState(() {
           this.MaxInSeconds = d.inSeconds;
@@ -56,16 +53,19 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
   void refresh() async{
     await getAuioIndex();
     Audio audio=await getAudio();
+    if(mounted){
     setState(() {
       this.songName=audio.name;
-    });
+    });}
     Player.instance.audioPlayer.onPlayerStateChanged.listen((AudioPlayerState d)async{
       if(d==AudioPlayerState.PLAYING){
         print("PlayerMusicWidget");
         Audio audio=await getAudio();
-        setState(() {
-          this.songName=audio.name;
-        });
+        if(mounted) {
+          setState(() {
+            this.songName = audio.name;
+          });
+        }
       }
     });
   }
@@ -78,12 +78,13 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
   }
   void _turnPrevious() async{
     var audios=await getAudios();
+    if(mounted){
     setState(() {
      this.audioIndex-=1;
       if( this.audioIndex<0){
         this.audioIndex=audios.length-1;
       }
-    });
+    });}
     await setAudioIndex();
     var audio= await getAudio();
     print(audio.name+"Previous");
@@ -91,12 +92,14 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
   }
   void _turnNext() async{
     var audios=await getAudios();
-    setState(() {
-      this.audioIndex+=1;
-      if( this.audioIndex>=audios.length){
-        this.audioIndex=0;
-      }
-    });
+    if(mounted) {
+      setState(() {
+        this.audioIndex += 1;
+        if (this.audioIndex >= audios.length) {
+          this.audioIndex = 0;
+        }
+      });
+    }
     await setAudioIndex();
     var audio= await getAudio();
     print(audio.name+"NEXT");
@@ -126,7 +129,7 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
 
   Widget build(BuildContext context) {
     return new Container(
-        width: 360,
+        width: MediaQuery.of(context).size.width,
         height: widget.ParentContainerHeight - 300,
         decoration: BoxDecoration(color: Colors.white, boxShadow: [
           BoxShadow(
@@ -172,6 +175,12 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
                         margin: EdgeInsets.only(left: 5),
                         child: new RaisedButton(
                             padding: EdgeInsets.symmetric(horizontal: 0),
+                            splashColor: Colors.amberAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            color: Colors.white,
+                            focusColor: Colors.white,
                             onPressed: _turnPrevious,
                             child: Icon(Icons.chevron_left))),
 
@@ -181,6 +190,12 @@ class PlayerMusicWidgetState extends State<PlayerMusicWidget> {
                         margin: EdgeInsets.only(left: 5),
                         child: new RaisedButton(
                             padding: EdgeInsets.symmetric(horizontal: 0),
+                            splashColor: Colors.amberAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            color: Colors.white,
+                            focusColor: Colors.white,
                             onPressed: _turnNext,
                             child: Icon(Icons.keyboard_arrow_right))),
                     new Container(

@@ -1,5 +1,5 @@
 import "package:shared_preferences/shared_preferences.dart";
-import "./Audio.dart";
+import "package:tog/AudioComponent/Audio.dart";
 class Constant{
   Future<SharedPreferences> prefs=SharedPreferences.getInstance();
   final String audiosKey="audios";
@@ -23,4 +23,6 @@ class Constant{
   static final searchHistoryTable="tog_history";
   static final playinglistTable="tog_playlist";
   static final version=1;
+  static String account="account";
+  static String password="password";
 }

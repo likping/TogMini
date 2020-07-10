@@ -1,0 +1,18 @@
+@startuml
+
+class Player {
+ AudioPlayer audioPlayer=new AudioPlayer();
+   factory Player()=>_getInstance();
+  static  Player get instance=>_getInstance();
+  static  player _instance;
+  Player._interal()
+  static Player _getInstance()
+  play(link) 
+  pause() 
+  stop() 
+  resume() 
+  turn()
+  onCompletion(func)
+}
+
+@enduml

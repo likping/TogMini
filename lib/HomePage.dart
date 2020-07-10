@@ -1,40 +1,67 @@
 import 'package:flutter/material.dart';
-import "./ShowSpaceWidget.dart";
-import "./SearchInputWidget.dart";
-import './Constant.dart';
+import "package:tog/Widgets/ShowSpaceWidget.dart";
+import "package:tog/Widgets/SearchInputWidget.dart";
+import 'package:tog/Config/Constant.dart';
+import 'package:tog/AudioComponent/Adapt.dart';
 
-class HomePage extends StatefulWidget{
-  State createState(){
-      return HomePageState();
+class HomePage extends StatefulWidget {
+  State createState() {
+    return HomePageState();
   }
 }
-class HomePageState extends State<HomePage>{
-  TextStyle titleStyle=new TextStyle(
-    color:Colors.orangeAccent
-  );
 
-  TextEditingController input=new TextEditingController();
+class HomePageState extends State<HomePage> {
+  TextStyle titleStyle = new TextStyle(color: Colors.orangeAccent);
+
+  TextEditingController input = new TextEditingController();
   FocusNode focusNode = FocusNode();
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-            title: new Text("Tog Mini",style:titleStyle ,),
-            backgroundColor:Colors.white
-      ),
-      body: new Container(
-              width: 360,
-              height: 700,
-
-              child:  new Column(
-                children: <Widget>[
-                  //todo 搜索框
-                  SearchInputWidget(input: input,focusNode:focusNode),
-                  //todo 底部播放器
-                  ShowSpaceWidget(input: input,focusNode: focusNode,)
-                ],
-      )
-    ),
+      body:_buildBody(context),
       resizeToAvoidBottomPadding: false,
     );
+  }
+  Widget _buildBody(BuildContext context){
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height:MediaQuery.of(context).size.height,
+//          decoration: BoxDecoration(border: Border.all(color: Colors.brown)),
+        child: new Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top:MediaQuery.of(context).padding.top ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              child: Center(
+                child: Text(
+                  "TogMini",
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontSize: 25
+                  ),
+                ),
+              )
+            ),
+            //todo 搜索框
+            new Container(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+//                decoration: BoxDecoration(border: Border.all(color: Colors.brown)),
+              child: SearchInputWidget(input: input, focusNode: focusNode),
+            ),
+            new Container(
+                child: ShowSpaceWidget(
+                  input: input,
+                  focusNode: focusNode,
+                ),
+
+                width:MediaQuery.of(context).size.width,
+                height: Adapt.screenH()-Adapt.padTopH()-100
+            )
+            //todo 底部播放器
+          ],
+        ));
   }
 }

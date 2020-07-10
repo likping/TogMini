@@ -1,6 +1,6 @@
-import './Audio.dart';
+import 'package:tog/AudioComponent/Audio.dart';
 import './FileStore.dart';
-import './AudioApiClient.dart';
+import 'package:tog/AudioComponent/AudioApiClient.dart';
 class AudioFileStore extends FileStore{
   final AudioApiClient apiClient;
   AudioFileStore({AudioApiClient apiClient}):this.apiClient=apiClient??AudioApiClient();

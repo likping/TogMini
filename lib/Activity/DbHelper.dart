@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
-import "./SearchHistory.dart";
-import './Constant.dart';
-import './Audio.dart';
+import 'package:tog/Config//SearchHistory.dart';
+import 'package:tog/Config//Constant.dart';
+import 'package:tog/AudioComponent/Audio.dart';
 class DbHelper{
   /*不知名语法。。。*/
   factory DbHelper()=>_getInstance();
@@ -17,7 +17,7 @@ class DbHelper{
   Database _db;
   Future<Database>get db async{
     var databasesPath = await getDatabasesPath();
-//    String path = "Android/data/app.swust.edu.cn.tog"+'/'+Constant.dbName;
+   // String path = "Android/data/app.swust.edu.cn.tog"+'/'+Constant.dbName;
     String path=databasesPath+'/'+Constant.dbName;
 //    await deleteDatabase(path);
     Database database = await openDatabase(

@@ -1,30 +1,46 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:tog/main.dart';
+import "dart:io";
+import "dart:convert";
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  test("测试网络请求", () async {
+    //
+    final HttpClient httpClient = HttpClient();
+    final protocal = "http";
+    final host = "112.124.19.202:8081";
+    final audioInfoPath = "/api/song_source";
+    final searchPath = "/api/search";
+    final hotFile = "/api/hot_list";
+    final platform = "qq";
+    var path = "$hotFile/${platform}";
+    HttpClientRequest request = await httpClient.getUrl(Uri.http(host, path));
+    HttpClientResponse response = await request.close();
+    var responseBody = await response.transform(Utf8Decoder()).join();
+    var json = jsonDecode(responseBody);
+    expect(json["status"], "ok");
+    var list = (json["data"] as Map<String, dynamic>);
+    expect(list, isNotEmpty);
+    expect(list["songs"], isNotEmpty);
+    //测试搜索
+    request = await httpClient.getUrl(Uri.http(
+        host, searchPath, {"provider": "qq", "keyword": '天空之城', "page": "1"}));
+    response = await request.close();
+    responseBody = await response.transform(Utf8Decoder()).join();
+    json = jsonDecode(responseBody);
+    expect(json["searchSuccess"], true);
+    list = (json["data"] as Map<String, dynamic>);
+    expect(list, isNotEmpty);
+    expect(list["songs"], isNotEmpty);
+    //测试音频接收
+    path = "$audioInfoPath/qq/0017CNzV2j064M";
+    request = await httpClient.getUrl(Uri.http(host, path));
+    response = await request.close();
+    responseBody = await response.transform(Utf8Decoder()).join();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    json = jsonDecode(responseBody);
+    expect(json["status"], "ok");
+    list = (json["data"] as Map<String, dynamic>);
+    expect(list, isNotEmpty);
+    expect(list["songSource"], isNotEmpty);
   });
 }

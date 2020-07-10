@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import "./SongListWidget.dart";
-import "./Constant.dart";
+import "package:tog/Widgets/SongListWidget.dart";
+import 'package:tog/Config//Constant.dart';
 import "dart:convert";
-import "./AudioFileStore.dart";
-import "./Audio.dart";
-import "./Player.dart";
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import "package:tog/AudioComponent/Audio.dart";
+import "package:tog/Activity//Player.dart";
 import "package:audioplayers/audioplayers.dart";
-
+import 'package:tog/Config//defaultAudio.dart';
+import 'package:tog/Activity//DbHelper.dart';
 class MusicControWidget extends StatefulWidget {
   AudioFileStore fileStore = new AudioFileStore();
   State createState() {
@@ -15,7 +16,8 @@ class MusicControWidget extends StatefulWidget {
 
   final reverseVisible;
   final detailVisible;
-  MusicControWidget({this.reverseVisible, this.detailVisible});
+  double containerHeight;
+  MusicControWidget({this.reverseVisible, this.detailVisible,this.containerHeight});
 }
 
 class MusicControState extends State<MusicControWidget> {
@@ -36,7 +38,16 @@ class MusicControState extends State<MusicControWidget> {
 
   void playSong(Audio audio) {
     widget.fileStore.songSource(audio.songSourceLink).then((audio) {
-      Player.instance.play(audio);
+      try{
+        Player.instance.play(audio);
+      }catch(error){
+
+      };
+
+    });
+    setState(() {
+      this.CurrentAudio=audio;
+
     });
   }
 
@@ -47,25 +58,22 @@ class MusicControState extends State<MusicControWidget> {
 
   setAudioIndex() async {
     var prefs = await Constant.instance.prefs;
-    prefs.setInt(Constant.instance.audioiIndex, this.audioIndex);
+    await prefs.setInt(Constant.instance.audioiIndex, this.audioIndex);
   }
 
   getAuioIndex() async {
     var prefs = await Constant.instance.prefs;
-    this.audioIndex = prefs.getInt(Constant.instance.audioiIndex);
+    this.audioIndex = await prefs.getInt(Constant.instance.audioiIndex);
   }
 
   Future<List<Audio>> getAudios() async {
     var prefs = await Constant.instance.prefs;
-    var json = jsonDecode(prefs.get(Constant.instance.audiosKey));
+    var json = jsonDecode(await prefs.get(Constant.instance.audiosKey));
     var value = (json as List<dynamic>);
     var audios = value.map((f) => Audio.fromJson(f)).toList();
     return audios;
   }
-
-  void refesh() async {
-    this.CurrentAudio = await getAudio();
-    playSong(this.CurrentAudio);
+  void _addPlayContoll(){
     Player.instance.audioPlayer.onPlayerStateChanged
         .listen((AudioPlayerState s) async {
       await getAuioIndex();
@@ -92,6 +100,11 @@ class MusicControState extends State<MusicControWidget> {
       this.CurrentAudio = await getAudio();
       playSong(this.CurrentAudio);
     });
+  }
+  void refesh() async {
+    this.CurrentAudio = await getAudio();
+    playSong(this.CurrentAudio);
+    _addPlayContoll();
   }
 
   void _pause() async {
@@ -125,13 +138,11 @@ class MusicControState extends State<MusicControWidget> {
   }
 
   Widget build(BuildContext context) {
-    double IconSize = 50;
+    double IconSize =widget.containerHeight/2;
     return new Container(
-      width: 360,
-      height: 120,
+      width: MediaQuery.of(context).size.width,
+      height: widget.containerHeight,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10), topRight: Radius.circular(10)),
           color: Color.fromRGBO(2, 2, 2, 1)),
       child: Row(
         children: <Widget>[
@@ -145,7 +156,7 @@ class MusicControState extends State<MusicControWidget> {
                   children: <Widget>[
                     new Container(
                       width: 230,
-                      height: 120,
+                      height: widget.containerHeight,
                       child: Center(
                           child: new Text(
                         "${this.CurrentAudio?.name}",

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import "./Audio.dart";
-import "./SongListViewItemWidget.dart";
-import "./Constant.dart";
+import "package:tog/AudioComponent/Audio.dart";
+import "package:tog/Widgets/SongListViewItemWidget.dart";
+import 'package:tog/Config//Constant.dart';
 import "dart:convert";
-import "AudioFileStore.dart";
-import "./Player.dart";
-import "./DbHelper.dart";
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import 'package:tog/Activity//Player.dart';
+import 'package:tog/Activity//DbHelper.dart';
+import "package:tog/AudioComponent/Adapt.dart";
+import "dart:ui";
 class PlayingList extends StatefulWidget  {
   double ParentContainerHeight;
   State createState() {
@@ -22,11 +24,12 @@ class PlayingListState extends State<PlayingList> with TickerProviderStateMixin 
   void dispose()async{
     super.dispose();
     var _audios = await getAudios();
-    print(jsonEncode(_audios.map((f) => f.toJson()).toList()));
+    //print(jsonEncode(_audios.map((f) => f.toJson()).toList()));
     await DbHelper.instance.deleteAllPlayList();
     for (var audio in _audios){
        await DbHelper.instance.insertPlayList(audio);
     }
+   // print(Adapt.screenH()*(1-0.0945)-74);
   }
  void initState(){
     // TODO: implement initState
@@ -45,12 +48,15 @@ class PlayingListState extends State<PlayingList> with TickerProviderStateMixin 
   void _clearAll()async {
     var prefs = await Constant.instance.prefs;
     var _audios = await getAudios();
-    audios.clear();
-    var value = jsonEncode(audios);
-      setState(() {
+    _audios.clear();
+    var value = jsonEncode(_audios);
+    await DbHelper.instance.deleteAllPlayList();
+
+
+        await prefs.setString(Constant.instance.audiosKey, value);
         this.audios=_audios;
-        prefs.setString(Constant.instance.audiosKey, value);
-      });
+
+        setState(() {});
 
   }
   void _delete(int audioIndex) async {
@@ -59,21 +65,21 @@ class PlayingListState extends State<PlayingList> with TickerProviderStateMixin 
     var _audios = await getAudios();
     _audios.removeAt(audioIndex);
     var value = jsonEncode(_audios.map((f) => f.toJson()).toList());
-      setState(() {
-        prefs.setString(Constant.instance.audiosKey, value);
+
+        await prefs.setString(Constant.instance.audiosKey, value);
         this.audios=_audios;
-      });
+        setState(() {});
   }
   Future<List<Audio>> getAudios() async {
     var prefs = await Constant.instance.prefs;
-    var json = jsonDecode(prefs.get(Constant.instance.audiosKey));
+    var json = jsonDecode(await prefs.get(Constant.instance.audiosKey));
     var value = (json as List<dynamic>);
     var audios = value.map((f) => Audio.fromJson(f)).toList();
     return audios;
   }
   Widget build(BuildContext context) {
     return new Container(
-        width: 360,
+        width: MediaQuery.of(context).size.width,
         height: widget.ParentContainerHeight - 150,
         decoration: BoxDecoration(color: Colors.white, boxShadow: [
           BoxShadow(

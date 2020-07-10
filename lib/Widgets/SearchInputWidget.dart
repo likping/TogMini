@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import "./AudioFileStore.dart";
-import "./Audio.dart";
-import "./Constant.dart";
-import "./DbHelper.dart";
-import "./SearchHistory.dart";
-
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import "package:tog/AudioComponent/Audio.dart";
+import 'package:tog/Config//Constant.dart';
+import 'package:tog/Activity//DbHelper.dart';
+import 'package:tog/Config//SearchHistory.dart';
+import "package:tog/AudioComponent/Adapt.dart";
 class SearchInputWidget extends StatefulWidget {
   State createState() {
     return SearchInputState();
@@ -31,9 +31,8 @@ class SearchInputState extends State<SearchInputWidget> {
         });
       });
   }
-
-  double height = 50;
-  double width = 300;
+  double height = Adapt.px(50);
+  double width =  Adapt.px(300);
   Widget build(BuildContext context) {
     return new Container(
         width: 360,
@@ -42,42 +41,38 @@ class SearchInputState extends State<SearchInputWidget> {
             new SizedBox(
                 width: width,
                 height: height,
-                child: new TextField(
+
+                child: Padding(
+                   padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                    child: new TextField(
                   controller: widget.input,
                   focusNode: widget.focusNode,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0))),
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
                   ),
-                )),
-            Positioned(
-              top: height,
-              child: new Container(
-                width: width,
-                height: height*2,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.redAccent)
-                ),
-                child: Center(child:Text("Hello"),),
-              ),
-            ),
+                ))),
             Positioned(
              left:width,
               child: new SizedBox(
-                width: 360 - width - 2,
-                height: height,
-                child: new FlatButton(
+                width: Adapt.px(360) - width,
+                height: height-10,
+                child:  Padding(
+                   padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+                    child:RaisedButton(
+                  elevation: 5,
                   onPressed: _search,
                   color: Colors.orangeAccent,
                   padding: EdgeInsets.symmetric(horizontal: 0),
                   child: Icon(
                     Icons.search,
-                    size: height,
+                    size: height-10,
                     color: Colors.white,
+
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0)),
-                ))),
+                      borderRadius: BorderRadius.circular(100)),
+                )))),
           ],
         ));
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import "./Audio.dart";
-import "./Constant.dart";
+import "package:tog/AudioComponent/Audio.dart";
+import 'package:tog/Config//Constant.dart';
 import "dart:convert";
-import "AudioFileStore.dart";
-import "./Player.dart";
-import './Constant.dart';
+import "package:tog/AudioComponent/AudioFileStore.dart";
+import 'package:tog/Activity//Player.dart';
+import 'package:tog/Config//Constant.dart';
 import "dart:math";
 enum Process{
   loading,
@@ -54,7 +54,11 @@ class RearchListItemState extends State<RearchListItem> {
      int audioIndex= await _add(index);
      Audio audio=await getAudio(audioIndex);
      await setAudioIndex(audioIndex);
-     await playSong(audio);
+     try {
+       await playSong(audio);
+     }catch(PlatformException ){
+
+    }
   }
   Future<int> _add(int index)async{
     print("add $index");
@@ -102,6 +106,20 @@ class RearchListItemState extends State<RearchListItem> {
     var audios = value.map((f) => Audio.fromJson(f)).toList();
     return audios;
   }
+  Color getColor(String name){
+      if(name=="qq"){
+        return Colors.greenAccent;
+      }
+      if(name=="netease"){
+        return Colors.red;
+      }
+      if(name=="kuwo"){
+        return Colors.blue;
+      }
+      if(name=="xiami"){
+        return Colors.redAccent;
+      }
+  }
   Widget building(){
     return  new Container(
         width: 360,
@@ -109,21 +127,17 @@ class RearchListItemState extends State<RearchListItem> {
         margin: EdgeInsets.only(top: 5),
         padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
+            border: Border.all(
+                color: getColor(widget.name)
+            )
+        ),
 
-            borderRadius: BorderRadius.circular(5)),
-//        child:ListView.builder(
-//          itemCount: widget.list.length,
-//          itemBuilder: (BuildContext context,int index){
-//           return new Text("${widget.list[index]}");
-//      }
         child: new Column(children: <Widget>[
           new Container(
             width: 360,
-            height: 20,
+            height: 16,
             padding: EdgeInsets.all(0),
             margin: EdgeInsets.all(0),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black)),
             child: Stack(
               children: <Widget>[
                 new Center(
@@ -138,8 +152,8 @@ class RearchListItemState extends State<RearchListItem> {
           ),
           new Container(
             width: 360,
-            height: this.ContainHeight - 22,
-            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            height: this.ContainHeight - 18,
+
             padding: EdgeInsets.all(0),
             margin: EdgeInsets.all(0),
             child: PageView.custom(
@@ -164,6 +178,9 @@ class RearchListItemState extends State<RearchListItem> {
           itemBuilder: (BuildContext context, int Itemindex) {
             return new Container(
                 width: 334,
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color:Color.fromRGBO(125, 125, 125, 0.3)))
+                ),
                 child: Row(
                   children: <Widget>[
                     new Container(
